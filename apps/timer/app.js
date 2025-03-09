@@ -1,24 +1,28 @@
-// Bangle.js 2 - 30-second repeating timer
+var counter = 30;
+var counterInterval;
 
-let counter = 0;
-
-function draw() {
-  g.clear();
-  g.setFont("6x8", 2);
-  g.setFontAlign(0, 0);
-  g.drawString("Timer:", g.getWidth() / 2, g.getHeight() / 2 - 20);
-  g.drawString(counter + "s", g.getWidth() / 2, g.getHeight() / 2 + 10);
-}
-
-function startTimer() {
-  setInterval(() => {
-    counter += 30;
-    Bangle.buzz(); // Vibrate
-    draw();
-  }, 30000); // 30 seconds in milliseconds
-}
-
-Bangle.loadWidgets();
-Bangle.drawWidgets();
-draw();
-startTimer();
+function countDown() {
+  counter--;
+  // Out of time
+  if (counter<=0) {
+    // stop the timer
+    clearInterval(counterInterval);
+    counterInterval = undefined;
+    // display the 'out of time' message
+    E.showMessage("Out of Time","My Timer");
+    // Now buzz
+    Bangle.buzz();
+    // again, every 30 seconds
+    counterInterval = setInterval(() => Bangle.buzz(), 30000);
+    // Ensure a button press resets the timer
+    Bangle.setUI({
+      mode : "custom",
+      btn : ()=>{
+        // remove old button press handler
+        Bangle.setUI();
+        // restart timer
+        startTimer();
+      }
+    });
+    return;
+  }
