@@ -26,3 +26,24 @@ function countDown() {
     });
     return;
   }
+
+  g.clear(1); // clear screen and reset graphics state
+  g.setFontAlign(0,0); // center font
+  g.setFont("Vector",80); // vector font, 80px
+  // draw the current counter value
+  g.drawString(counter, g.getWidth()/2, g.getHeight()/2);
+  // optional - this keeps the watch LCD lit up
+  Bangle.setLCDPower(1);
+}
+
+function startTimer() {
+  counter = 30;
+  countDown();
+  // if we had an interval before, clear it
+  if (counterInterval)
+    clearInterval(counterInterval);
+  // call countDown every second
+  counterInterval = setInterval(countDown, 1000);
+}
+
+startTimer();
